@@ -20,6 +20,44 @@ export function fetchSC(context: IContext, path: string): Promise<IFetchResults>
       return x;
     });
 }
+// fetch the next page using a link from odata-nextlink
+export function fetchSCNextPage(
+  context: IContext, 
+  nextLink: string,
+  setNextLink:(x:string)=>void,
+  datalist:Array<any>,
+  setDataList:(x:Array<any>)=>void
+  ): Promise<IFetchResults> {
+ return context.client
+    .get(nextLink, AadHttpClient.configurations.v1)
+    .then((x) => {
+      return x.json().then((results) => {
+        debugger;
+      const x = datalist;
+        x.pop();
+        for (const item of results.value) {
+          x.push(item);
+        }
+        if (results['@odata.nextLink']) {
+          setNextLink(results['@odata.nextLink']);
+          x.push(null);//force onrendermissingitem
+        }
+        else{
+           setNextLink(null)
+        }
+        setDataList(x);
+      
+       return {
+          nextLink:results['@odata.nextLink'],
+          value:results.value
+        }
+      });
+    })
+    .catch((x) => {
+      alert(x);
+      return x;
+    });
+}
 export function patchSC(
   context: IContext,
   path: string,

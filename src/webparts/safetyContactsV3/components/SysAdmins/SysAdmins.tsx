@@ -2,7 +2,7 @@ import * as React from 'react';
 import { AppContext } from '../AppContext';
 import { ISysAdminsProps } from './ISysAdminsProps';
 import { useEffect } from 'react';
-import { deleteSC, fetchSC } from '../../../../utilities/ioMod';
+import { deleteSC, fetchSC, fetchSCNextPage } from '../../../../utilities/ioMod';
 import { DetailsList, IColumn, IDetailsRowProps } from '@fluentui/react/lib/DetailsList';
 import { FontIcon } from '@fluentui/react/lib/Icon';
 import { mergeStyles } from '@fluentui/react/lib/Styling';
@@ -13,7 +13,10 @@ import { IAdmins } from '../../../../models/db/IAdmins';
 import { PanelMode } from '../../../../models/PanelMode';
 import { IContextualMenuItem } from '@fluentui/react';
 export function SysAdmins(props: ISysAdminsProps): JSX.Element {
-
+  const initialApiPath="admins";
+const [apiPath,setApiPath]=React.useState<string>(initialApiPath);
+  const [sortBy, setSortBy] = React.useState<string>(null);
+  const [sortDescending, setSortDescending] = React.useState<boolean>(false);
   const [nextLink, setNextLink] = React.useState<string>(null);
   const [selectedItem, setSelectedItem] = React.useState<IAdmins>(null);
   const [panelMode, setPanelMode] = React.useState<PanelMode>(null);
@@ -32,15 +35,15 @@ export function SysAdmins(props: ISysAdminsProps): JSX.Element {
   const [sysadmins, setSysadmins] = React.useState<Array<IAdmins>>([]);
   useEffect(() => {
     const loadData = async (): Promise<void> => {
-      const res = await fetchSC(appContext, "admins");
+      const res = await fetchSC(appContext,apiPath);
 
       setSysadmins(res.value);
       if (res.nextLink) {
         setNextLink(res.nextLink);
         res.value.push(null);//force missing item?
-      } else{
+      } else {
         setNextLink(null)
-     }
+      }
 
       console.log(res);
 
@@ -48,11 +51,38 @@ export function SysAdmins(props: ISysAdminsProps): JSX.Element {
     };
     loadData();
   }, [refreshDataFlag]);
+  const columnHeaderClicked = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
+    debugger;
+    if (sortBy === column.fieldName) {
+      setSortDescending(!sortDescending);
+    }
+    else {
+      setSortBy(column.fieldName);
+    }
+    if(!sortDescending){
+      setApiPath(`${initialApiPath}?$orderBy=${column.fieldName}`)
+    }else{
+    setApiPath(`${initialApiPath}?$orderBy=${column.fieldName} desc`)
+    }
+
+    refreshData();
+
+  }
   const cols: IColumn[] = [
     {
       key: "SysAdminEmail", minWidth: 20, name: "SysAdminEmail", fieldName: "SysAdminEmail", isResizable: true,
+      isSorted: sortBy === "SysAdminEmail",
+      isSortedDescending: sortDescending,
+      sortAscendingAriaLabel: 'Sorted A to Z',
+      sortDescendingAriaLabel: 'Sorted Z to A',
+      onColumnClick: columnHeaderClicked
     }, {
-      key: "SysAdminId", minWidth: 100, name: "SysAdminId", fieldName: "SysAdminId", isResizable: true
+      key: "SysAdminId", minWidth: 100, name: "SysAdminId", fieldName: "SysAdminId", isResizable: true,
+      isSorted: sortBy === "SysAdminId",
+      isSortedDescending: sortDescending,
+      sortAscendingAriaLabel: 'Sorted low to high',
+      sortDescendingAriaLabel: 'Sorted hi to low',
+      onColumnClick: columnHeaderClicked
     }
     , {
       key: "Commands", minWidth: 420, name: "Commands", fieldName: "Commands", isResizable: true,
@@ -103,32 +133,10 @@ export function SysAdmins(props: ISysAdminsProps): JSX.Element {
         <SysAdmin selectedItem={selectedItem} setSelectedItem={setSelectedItem} panelMode={panelMode} setPanelMode={setPanelMode} refreshData={refreshData} />
       </Panel>
       <DetailsList columns={cols} items={sysadmins} onRenderMissingItem={(index?: number, rowProps?: IDetailsRowProps): React.ReactNode => {
-        debugger;
-console.log('loading nor')
-        //Set the skip token based on the nextlink
-        const linkparts=nextLink.split('?');
-        const next=`admins?${linkparts[1]}`
-        fetchSC(appContext, next).then(res => {
-          debugger;
-          const x = sysadmins;
-          x.pop();
-          for (const item of res.value) {
-            x.push(item);
-          }
-          setSysadmins(x);
-          if (res.nextLink) {
-            setNextLink(res.nextLink);
-            x.push(null);//force missing item?
-          }
-          else{
-             setNextLink(null)
-          }
-          setSysadmins(x);
-        });
+        fetchSCNextPage(appContext, nextLink, setNextLink, sysadmins, setSysadmins)
         return (
           <div>Loading...</div>
         )
-        // (index?: number, rowProps?: IDetailsRowProps) => React.ReactNode
       }} />
 
       {nextLink}
