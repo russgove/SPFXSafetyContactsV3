@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "14.15.1",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "version": "1.16.1",
+    "libraryName": "spfx-safety-contacts-v-3",
+    "libraryId": "37b38b8e-02a1-4460-944b-49e6387ef49e",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "spfx-safety-contacts-v-3",
+    "solutionShortDescription": "spfx-safety-contacts-v-3 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

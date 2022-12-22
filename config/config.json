@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "safety-contacts-v-3-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/safetyContactsV3/SafetyContactsV3WebPart.js",
+          "manifest": "./src/webparts/safetyContactsV3/SafetyContactsV3WebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SafetyContactsV3WebPartStrings": "lib/webparts/safetyContactsV3/loc/{locale}.js"
+  }
+}

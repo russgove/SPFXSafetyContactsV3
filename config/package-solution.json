@@ -1,0 +1,42 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+    "solution": {
+        "name": "spfx-safety-contacts-v-3-client-side-solution",
+        "id": "37b38b8e-02a1-4460-944b-49e6387ef49e",
+        "version": "1.0.0.0",
+        "includeClientSideAssets": true,
+        "skipFeatureDeployment": true,
+        "isDomainIsolated": false,
+        "developer": {
+            "name": "",
+            "websiteUrl": "",
+            "privacyUrl": "",
+            "termsOfUseUrl": "",
+            "mpnId": "Undefined-1.16.1"
+        },
+        "metadata": {
+            "shortDescription": {
+                "default": "spfx-safety-contacts-v-3 description"
+            },
+            "longDescription": {
+                "default": "spfx-safety-contacts-v-3 description"
+            },
+            "screenshotPaths": [],
+            "videoUrl": "",
+            "categories": []
+        },
+        "features": [{
+            "title": "spfx-safety-contacts-v-3 Feature",
+            "description": "The feature that activates elements of the spfx-safety-contacts-v-3 solution.",
+            "id": "e32b1f1a-002c-4529-81ad-1b3b33c988b6",
+            "version": "1.0.0.0"
+        }],
+        "webApiPermissionRequests": [{
+            "resource": "SafetyContactsTestV2",
+            "scope": "user_impersonation"
+        }]
+    },
+    "paths": {
+        "zippedPackage": "solution/spfx-safety-contacts-v-3.sppkg"
+    }
+}
